@@ -45,7 +45,8 @@ runs:
       with:
         node-version: 14
         cache: "npm"
-    - run: |
+    - if: ${{ inputs.react }}
+      run: |
         npm install
         npm build
       shell: bash
@@ -76,5 +77,5 @@ runs:
 
     # deploy on url
     - run: |
-        curl --location --request POST '${{ inputs.url }}/${{ github.event.repository.name }}?token=${{ inputs.token }}' --header 'Content-Type: application/zip' --data-binary '@output.zip'
+        curl --location --request POST '${{ inputs.url }}/${{ github.event.repository.name }}${{ inputs.mock && "-mock" || "" }}?token=${{ inputs.token }}' --header 'Content-Type: application/zip' --data-binary '@output.zip'
       shell: bash
