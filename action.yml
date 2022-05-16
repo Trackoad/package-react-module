@@ -32,7 +32,7 @@ runs:
   steps:
     # create build folder
     - run: |
-        mkdir -r build/src
+        mkdir -p build/src
         cp -r ${{ inputs.files }} build/src
       shell: bash
 
