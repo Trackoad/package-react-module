@@ -16,5 +16,5 @@ branding:
 runs:
   using: composite
   steps:
-    - run: echo ${{ INPUT_FILES }}
+    - run: echo ${{ inputs.files }}
       shell: bash
