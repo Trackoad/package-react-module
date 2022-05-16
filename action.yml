@@ -2,19 +2,74 @@ name: "Package react module"
 
 description: "Create module React and publish them"
 
-inputs:
-  files:
-    description: "Files and directories to module"
-    required: true
-  mock:
-    description: "For mock module ?"
-    required: false
 branding:
   icon: "box"
   color: "red"
 
+inputs:
+  files:
+    description: "Files and directories to module"
+    required: true
+
+  react:
+    description: "Is an react dependency ?"
+    required: false
+
+  mock:
+    description: "For mock module ?"
+    required: false
+
+  url:
+    description: "URL deploy"
+    required: true
+
+  token:
+    description: "URL deploy"
+    required: true
+
 runs:
   using: composite
   steps:
-    - run: echo ${{ inputs.files }}
+    # create build folder
+    - run: |
+        mkdir -r build/src
+        cp -r ${{ inputs.files }} build/src
+      shell: bash
+
+    # build react
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 14
+        cache: "npm"
+      run: |
+        npm install
+        npm build
+
+    # set package json to variable
+    - id: set_var
+      run: |
+        content=`cat ./package.json`
+        # the following lines are only required for multi line json
+        content="${content//'%'/'%25'}"
+        content="${content//$'\n'/'%0A'}"
+        content="${content//$'\r'/'%0D'}"
+        # end of optional handling for multi line json
+        echo "::set-output name=packageJson::$content"
+      shell: bash
+
+    # create package json
+    - run: |
+        echo '{ "name": "${{ github.event.repository.name }}" "type": "module", "main": "${{fromJson(steps.set_var.outputs.packageJson).main}}", "dependencies": ${{ toJSON(fromJson(steps.set_var.outputs.packageJson).dependencies) }} }' > build/package.json
+      shell: bash
+
+    # zip files
+    - uses: papeloto/action-zip@v1
+      with:
+        files: build
+        recursive: true
+        dest: output.zip
+
+    # deploy on url
+    - run: |
+        curl --location --request POST '${{ inputs.url }}/${{ github.event.repository.name }}?token=${{ inputs.token }}' --header 'Content-Type: application/zip' --data-binary '@output.zip'
       shell: bash
