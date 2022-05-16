@@ -24,7 +24,11 @@ inputs:
     required: true
 
   token:
-    description: "URL deploy"
+    description: "Secret TOKEN"
+    required: true
+
+  organization:
+    description: "Organization name"
     required: true
 
 runs:
@@ -60,7 +64,7 @@ runs:
 
     # create package json
     - run: |
-        echo '{ "name": "${{ github.event.repository.name }}" "type": "module", "main": "${{fromJson(steps.set_var.outputs.packageJson).main}}", "dependencies": ${{ toJSON(fromJson(steps.set_var.outputs.packageJson).dependencies) }} }' > build/package.json
+        echo '{ "name": "${{ github.event.repository.name }}", "type": "module", "main": "${{fromJson(steps.set_var.outputs.packageJson).main}}", "dependencies": ${{ toJSON(fromJson(steps.set_var.outputs.packageJson).dependencies) }}, "${{ inputs.organization }}": ${{ toJSON(fromJson(steps.set_var.outputs.packageJson)[inputs.organization]) }} }' > build/package.json
       shell: bash
 
     # zip files
