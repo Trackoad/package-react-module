@@ -1,0 +1,20 @@
+name: "Package react module"
+
+description: "Create module React and publish them"
+
+inputs:
+  files:
+    description: "Files and directories to module"
+    required: true
+  mock:
+    description: "For mock module ?"
+    required: false
+branding:
+  icon: "box"
+  color: "red"
+
+runs:
+  using: composite
+  steps:
+    - run: echo ${{ INPUT_FILES }}
+      shell: bash
