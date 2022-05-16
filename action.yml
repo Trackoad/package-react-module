@@ -41,9 +41,10 @@ runs:
       with:
         node-version: 14
         cache: "npm"
-      run: |
+    - run: |
         npm install
         npm build
+      shell: bash
 
     # set package json to variable
     - id: set_var
