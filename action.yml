@@ -47,8 +47,10 @@ runs:
         cache: "npm"
     - if: ${{ inputs.react }}
       run: |
+        echo '{"presets":[["@babel/preset-react",{"runtime":"automatic"}]]}' > .babelrc.json
         npm install
-        npm build
+        npm i @babel/cli @babel/core @babel/preset-react
+        npx babel build --keep-file-extension --out-dir build
       shell: bash
 
     # set package json to variable
