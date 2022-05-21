@@ -40,6 +40,7 @@ runs:
             echo "Please set an token"
             exit 1
          fi
+      shell: bash
       env:
        AUTH_TOKEN: ${{ inputs.token }}
   
