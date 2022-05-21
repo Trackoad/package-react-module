@@ -49,7 +49,7 @@ runs:
       run: |
         echo '{"presets":[["@babel/preset-react",{"runtime":"automatic"}]]}' > .babelrc.json
         npm install
-        npm i @babel/cli @babel/core @babel/preset-react
+        npm i -g @babel/cli @babel/core @babel/preset-react
         npx babel build --keep-file-extension --out-dir build
       shell: bash
 
