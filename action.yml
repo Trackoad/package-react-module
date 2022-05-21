@@ -34,6 +34,15 @@ inputs:
 runs:
   using: composite
   steps:
+    # check token
+    - run: |
+         if ["$AUTH_TOKEN" != ""]; then
+            echo "Please set an token"
+            exit 1
+         fi
+      env:
+       AUTH_TOKEN: ${{ inputs.token }}
+  
     # create build folder
     - run: |
         mkdir -p build/src
